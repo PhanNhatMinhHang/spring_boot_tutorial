@@ -1,6 +1,7 @@
 package com.hang.springBoot.controllers;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.hang.springBoot.models.Lesson;
-import com.hang.springBoot.repositories.CourseRepository;
 import com.hang.springBoot.repositories.LessonRepository;
+import com.hang.springBoot.repositories.UserCourseRepository;
 
 @RestController
 @RequestMapping("/")
@@ -20,9 +22,9 @@ public class LessonsController {
 
 	@Autowired
 	private LessonRepository repository;
-	
+
 	@Autowired
-	private CourseRepository courseRepository;
+	private UserCourseRepository ucRepository;
 	
 	@GetMapping("/users/{userId}/courses/{courseId}/lessons")
 	public List<Lesson> findAllLessions(@PathVariable Long userId, @PathVariable Long courseId){
@@ -54,6 +56,6 @@ public class LessonsController {
 	}
 	
 	private void checkCourse(Long userId, Long courseId) {
-		courseRepository.findByUserIdAndId(userId, courseId).orElseThrow(() -> new ResourceNotFoundException());
+		ucRepository.findByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new ResourceNotFoundException());
 	}
 }

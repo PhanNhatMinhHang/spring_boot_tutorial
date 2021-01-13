@@ -1,29 +1,37 @@
 package com.hang.springBoot.models;
 
+import java.util.List;
 
+import javax.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User{
+public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<Payment> payments;
+
+	@OneToMany(mappedBy = "user")
+	@JsonIgnore
+	private List<UserCourse> userCourses;
+
 //	private Collection authorities;
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
-	public User(Long id, String name,String password) {
+
+	public User(Long id, String name, String password) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
@@ -43,13 +51,32 @@ public class User{
 
 	public void setName(String name) {
 		if (name != null) {
-			this.name = name;	
+			this.name = name;
 		}
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public List<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(List<Payment> payments) {
+		this.payments = payments;
+	}
+
+	public List<UserCourse> getUserCourses() {
+		return userCourses;
+	}
+
+	public void setUserCourses(List<UserCourse> userCourses) {
+		this.userCourses = userCourses;
+	}
+
 }

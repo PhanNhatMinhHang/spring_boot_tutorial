@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Payment {
@@ -19,8 +21,9 @@ public class Payment {
 	private String cardNumber;
 	@Column(name = "card_expired_month")
 	private String cardExpiredMonth;
-	@Column(name = "user_id")
-	private Long userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Payment() {
 		// TODO Auto-generated constructor stub
@@ -33,7 +36,6 @@ public class Payment {
 		this.cardType = cardType;
 		this.cardNumber = cardNumber;
 		this.cardExpiredMonth = cardExpiredMonth;
-		this.userId = userId;
 	}
 
 	public Long getId() {
@@ -84,14 +86,13 @@ public class Payment {
 		}
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(Long userId) {
-		if (userId!=null) {
-			this.userId = userId;	
-		}
+	public void setUser(User user) {
+		this.user = user;
 	}
+
 
 }
