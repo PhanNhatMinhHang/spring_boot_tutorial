@@ -1,26 +1,32 @@
 package com.hang.springBoot.models;
 
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
 @Entity
-public class User {
+public class User{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@Column(name = "password", nullable = false)
+	private String password;
+//	private Collection authorities;
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
-	public User(Long id, String name) {
+	public User(Long id, String name,String password) {
 		this.id = id;
 		this.name = name;
+		this.password = password;
 	}
 
 	public Long getId() {
@@ -39,5 +45,11 @@ public class User {
 		if (name != null) {
 			this.name = name;	
 		}
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

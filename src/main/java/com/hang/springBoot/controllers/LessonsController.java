@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.ResourceAccessException;
-
 import com.hang.springBoot.models.Lesson;
 import com.hang.springBoot.repositories.CourseRepository;
 import com.hang.springBoot.repositories.LessonRepository;
@@ -34,7 +32,7 @@ public class LessonsController {
 	@GetMapping("/users/{userId}/courses/{courseId}/lessons/{id}")
 	public Lesson findLessionById(@PathVariable Long userId, @PathVariable Long courseId, @PathVariable Long id) {
 		checkCourse(userId, courseId);
-		return repository.findByCourseIdAndId(courseId, id).orElseThrow(()-> new ResourceAccessException("Can't find lesson with id "+id));
+		return repository.findByCourseIdAndId(courseId, id).orElseThrow(()-> new ResourceNotFoundException("Can't find lesson with id "+id));
 	}
 	@PostMapping("/users/{userId}/courses/{courseId}/lessons")
 	public Lesson createLession(@PathVariable Long userId, @PathVariable Long courseId, Lesson lesson) {
