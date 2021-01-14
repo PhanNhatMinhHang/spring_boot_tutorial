@@ -22,7 +22,7 @@ public class Course {
 
 	@OneToMany(mappedBy = "course")
 	@JsonIgnore
-	private List<UserCourse> userCourses;
+	private List<Lesson> lessons;
 
 	@Column(name = "price")
 	private Float price;
@@ -65,12 +65,13 @@ public class Course {
 		}
 	}
 
-	public List<UserCourse> getUserCourses() {
-		return userCourses;
+	public List<Lesson> getLessons() {
+		return lessons;
 	}
 
-	public void setUserCourses(List<UserCourse> userCourses) {
-		this.userCourses = userCourses;
+	public void setLessons(List<Lesson> lessons) {
+		this.lessons = lessons;
 	}
+
 
 }

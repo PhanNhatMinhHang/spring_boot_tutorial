@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Lesson {
@@ -15,16 +17,17 @@ public class Lesson {
 	private String name;
 	@Column(name = "professor")
 	private String professor;
-	@Column(name = "course_id")
-	private Long courseId;
+
+	@ManyToOne
+	@JoinColumn(name = "course_id")
+	private Course course;
 	public Lesson() {
 		// TODO Auto-generated constructor stub
 	}
-	public Lesson(Long id, String name, String professor,Long courseId) {
+	public Lesson(Long id, String name, String professor) {
 		this.id = id;
 		this.name = name;
 		this.professor = professor;
-		this.courseId=courseId;
 	}
 	public Long getId() {
 		return id;
@@ -48,10 +51,11 @@ public class Lesson {
 			this.professor = professor;	
 		}
 	}
-	public Long getCourseId() {
-		return courseId;
+	public Course getCourse() {
+		return course;
 	}
-	public void setCourseId(Long courseId) {
-		this.courseId = courseId;
+	public void setCourse(Course course) {
+		this.course = course;
 	}
+
 }

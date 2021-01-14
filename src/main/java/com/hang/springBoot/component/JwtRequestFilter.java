@@ -33,22 +33,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
 
         User user = null;
-        System.out.println("==============" + authorizationHeader);
         if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Token ")) {
             String jwt = authorizationHeader.substring(6);
             user = jwtUtil.getUserFromToken(jwt);
         }
         
-        
         if (user != null) {
-        	System.out.println("==============" + user.getName());
         	Set<GrantedAuthority> authorities = new HashSet<>();
         	authorities.add(new SimpleGrantedAuthority("USER_READ"));
         	UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(user, null, authorities);
         	authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         	SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+        	SecurityContextHolder.getContext().setAuthentication(null);
         }
+
         filterChain.doFilter(request, response);
 	}
 }

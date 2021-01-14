@@ -22,10 +22,10 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<Payment> payments;
 
-	@OneToMany(mappedBy = "user")
 	@JsonIgnore
+	@OneToMany(mappedBy = "user")
 	private List<UserCourse> userCourses;
-
+	
 //	private Collection authorities;
 	public User() {
 		// TODO Auto-generated constructor stub

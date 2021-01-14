@@ -2,6 +2,8 @@ package com.hang.springBoot.models;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class UserCourse {
 	@Id
@@ -16,6 +18,9 @@ public class UserCourse {
 	@JoinColumn(name = "course_id")
 	private Course course;
 
+	private Long newCourseId;
+	private Long newUserId;
+	
 	public UserCourse() {
 		// TODO Auto-generated constructor stub
 	}
@@ -44,4 +49,22 @@ public class UserCourse {
 		this.course = course;
 	}
 
+	@JsonIgnore
+	public Long getNewCourseId() {
+		return newCourseId;
+	}
+
+	public void setNewCourseId(Long newCourseId) {
+		this.newCourseId = newCourseId;
+	}
+
+	@JsonIgnore
+	public Long getNewUserId() {
+		return newUserId;
+	}
+
+	public void setNewUserId(Long newUserId) {
+		this.newUserId = newUserId;
+	}
+	
 }

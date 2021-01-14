@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hang.springBoot.models.Lesson;
+import com.hang.springBoot.repositories.CourseRepository;
 import com.hang.springBoot.repositories.LessonRepository;
-import com.hang.springBoot.repositories.UserCourseRepository;
 
 @RestController
 @RequestMapping("/")
@@ -22,40 +22,34 @@ public class LessonsController {
 
 	@Autowired
 	private LessonRepository repository;
-
 	@Autowired
-	private UserCourseRepository ucRepository;
+	private CourseRepository courseRepository;
 	
-	@GetMapping("/users/{userId}/courses/{courseId}/lessons")
-	public List<Lesson> findAllLessions(@PathVariable Long userId, @PathVariable Long courseId){
-		checkCourse(userId, courseId);
+	@GetMapping("/courses/{courseId}/lessons")
+	public List<Lesson> findAllLessions( @PathVariable Long courseId){
 		return repository.findByCourseId(courseId);
 	}
-	@GetMapping("/users/{userId}/courses/{courseId}/lessons/{id}")
-	public Lesson findLessionById(@PathVariable Long userId, @PathVariable Long courseId, @PathVariable Long id) {
-		checkCourse(userId, courseId);
+	@GetMapping("/courses/{courseId}/lessons/{id}")
+	public Lesson findLessionById( @PathVariable Long courseId, @PathVariable Long id) {
 		return repository.findByCourseIdAndId(courseId, id).orElseThrow(()-> new ResourceNotFoundException("Can't find lesson with id "+id));
 	}
-	@PostMapping("/users/{userId}/courses/{courseId}/lessons")
-	public Lesson createLession(@PathVariable Long userId, @PathVariable Long courseId, Lesson lesson) {
-		checkCourse(userId, courseId);
-		lesson.setCourseId(courseId);
+	@PostMapping("/courses/{courseId}/lessons")
+	public Lesson createLession(@PathVariable Long courseId, Lesson lesson) {
+		lesson.setCourse(CommonFinder.findCourseById(courseRepository, courseId));
 		return repository.save(lesson);
 	}
-	@PutMapping("/users/{userId}/courses/{courseId}/lessons/{id}")
-	public Lesson updateLession(@PathVariable Long userId, @PathVariable Long courseId, @PathVariable Long id,Lesson newLession) {
-		Lesson lession = findLessionById(userId, courseId, id);
-		lession.setName(newLession.getName());
-		lession.setProfessor(newLession.getProfessor());
-		return repository.save(lession);
+	@PutMapping("/courses/{courseId}/lessons/{id}")
+	public Lesson updateLession(@PathVariable Long courseId, @PathVariable Long id,Lesson newLession) {
+		Lesson lesson = findLessionById(courseId, id);
+		lesson.setName(newLession.getName());
+		lesson.setProfessor(newLession.getProfessor());
+		return repository.save(lesson);
 	}
-	@DeleteMapping("/users/{userId}/courses/{courseId}/lessons/{id}")
-	public boolean deleteLession(@PathVariable Long userId, @PathVariable Long courseId, @PathVariable Long id) {
-		repository.delete(findLessionById(userId, courseId, id));
+	@DeleteMapping("/courses/{courseId}/lessons/{id}")
+	public boolean deleteLession(@PathVariable Long courseId, @PathVariable Long id) {
+		repository.delete(findLessionById(courseId, id));
 		return true;
 	}
 	
-	private void checkCourse(Long userId, Long courseId) {
-		ucRepository.findByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new ResourceNotFoundException());
-	}
+
 }

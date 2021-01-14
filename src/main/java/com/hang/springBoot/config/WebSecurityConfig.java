@@ -7,16 +7,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.hang.springBoot.component.JwtRequestFilter;
-import com.hang.springBoot.repositories.UserRepository;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
     private JwtRequestFilter jwtRequestFilter;
-
-	@Autowired
-	private UserRepository repository;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

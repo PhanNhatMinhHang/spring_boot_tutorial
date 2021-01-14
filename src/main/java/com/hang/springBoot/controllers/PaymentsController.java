@@ -49,7 +49,6 @@ public class PaymentsController {
 		payment.setCardExpiredMonth(newPayment.getCardExpiredMonth());
 		payment.setCardNumber(newPayment.getCardNumber());
 		payment.setCardType(newPayment.getCardType());
-		payment.setUser(CommonFinder.findUserById(userRepository, userId));
 		return repository.save(payment);
 	}
 

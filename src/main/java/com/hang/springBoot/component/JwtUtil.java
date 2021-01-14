@@ -17,11 +17,8 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-
-import net.minidev.json.JSONObject;
-
 import com.nimbusds.jwt.JWTClaimsSet.Builder;
+import com.nimbusds.jwt.SignedJWT;
 
 @Component
 public class JwtUtil {
@@ -34,7 +31,8 @@ public class JwtUtil {
 		String token = null;
 		try {
 			Builder builder= new Builder();
-			builder.claim(USER,user);
+			ObjectMapper mapper = new ObjectMapper();
+			builder.claim(USER, mapper.writeValueAsString(user));
 			builder.expirationTime(generateExpirationDate());
 			JWTClaimsSet claimsSet = builder.build();
 			SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
@@ -71,8 +69,7 @@ public class JwtUtil {
         try {
             JWTClaimsSet claims = getClaimsFromToken(token);
             if (claims != null && isTokenExpired(claims)) {
-                JSONObject jsonObject = (JSONObject) claims.getClaim(USER);
-                user = new ObjectMapper().readValue(jsonObject.toJSONString(), User.class);
+                user = new ObjectMapper().readValue((String)claims.getClaim(USER), User.class);
             }
         } catch (Exception e) {
             logger.error(e.getMessage());

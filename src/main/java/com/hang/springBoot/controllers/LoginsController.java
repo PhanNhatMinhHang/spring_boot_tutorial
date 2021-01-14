@@ -25,5 +25,11 @@ public class LoginsController {
 		User user = repository.findByNameAndPassword(username, password).orElseThrow(() -> new ResourceNotFoundException());
 		String token = jwtUtil.generateToken(user);
 		return token;
+//		ObjectMapper mapper = new ObjectMapper();
+//		try {
+//			return mapper.writeValueAsString(user);
+//		} catch (JsonProcessingException e) {
+//			return "";
+//		}
 	}
 }
