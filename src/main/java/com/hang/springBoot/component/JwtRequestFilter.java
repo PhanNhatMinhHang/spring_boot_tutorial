@@ -40,7 +40,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         
         if (user != null) {
         	Set<GrantedAuthority> authorities = new HashSet<>();
-        	authorities.add(new SimpleGrantedAuthority("USER_READ"));
+        	for (String a : user.getRole().getAuthorities().split(",")) {
+        		authorities.add(new SimpleGrantedAuthority(a));
+        	}
         	UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(user, null, authorities);
         	authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

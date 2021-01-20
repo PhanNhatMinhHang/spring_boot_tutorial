@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -36,8 +38,13 @@ public class User extends RepresentationModel<User>{
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<UserCourse> userCourses;
-	
-//	private Collection authorities;
+
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Role role;
+
+	private String rolename;
+
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
@@ -90,4 +97,22 @@ public class User extends RepresentationModel<User>{
 	public void setUserCourses(List<UserCourse> userCourses) {
 		this.userCourses = userCourses;
 	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	@JsonIgnore
+	public String getRolename() {
+		return rolename;
+	}
+
+	public void setRolename(String rolename) {
+		this.rolename = rolename;
+	}
+	
 }
