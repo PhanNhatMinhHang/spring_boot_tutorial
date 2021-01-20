@@ -2,19 +2,30 @@ package com.hang.springBoot.models;
 
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User {
+public class User extends RepresentationModel<User>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "name", nullable = false)
+
+	@NotBlank
+	@Size(min = 3)
+	@Column(name = "name")
 	private String name;
 
-	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 
@@ -55,6 +66,7 @@ public class User {
 		}
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
@@ -78,5 +90,4 @@ public class User {
 	public void setUserCourses(List<UserCourse> userCourses) {
 		this.userCourses = userCourses;
 	}
-
 }
