@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,23 +25,7 @@ import com.hang.springBoot.models.User;
 import com.hang.springBoot.repositories.RoleRepository;
 import com.hang.springBoot.repositories.UserRepository;
 
-class UserAssembler implements RepresentationModelAssembler<User, User> {
-	@Override
-	public User toModel(User entity) {
-		return entity;
-	}
-
-	@Override
-	public CollectionModel<User> toCollectionModel(Iterable<? extends User> entities) {
-		// TODO Auto-generated method stub
-		CollectionModel<User> collectionModel = RepresentationModelAssembler.super.toCollectionModel(entities);
-		collectionModel.add(WebMvcLinkBuilder
-				.linkTo(WebMvcLinkBuilder.methodOn(UsersController.class).findAllUsers())
-				.withSelfRel());
-		return collectionModel;
-	}
-}
-
+@Controller
 @RestController
 @RequestMapping("/")
 @CrossOrigin("http://localhost:8080")
@@ -54,25 +36,14 @@ public class UsersController {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@Autowired
-    private PagedResourcesAssembler<User> pagedResourcesAssembler;
- 
-	private UserAssembler userAssembler = new UserAssembler();
-
-	@PreAuthorize("hasAnyAuthority('USER_READ')")
+//	@PreAuthorize("hasAnyAuthority('USER_READ')")
 	@GetMapping("/users")
-	public CollectionModel<User> findAllUsers() {
-		return userAssembler.toCollectionModel(repository.findAll());
+	public String findAllUsers(Pageable pageable) {
+		return "";
+//		return repository.findAll(pageable);
 	}
 
-	@PreAuthorize("hasAnyAuthority('USER_READ')")
-	@GetMapping("/users-list")
-	public List<User> findAllUsers(Pageable pageable) {
-		Page<User> users = repository.findAll(pageable);
-		return users.getContent();
-	}
-
-	@PreAuthorize("hasAnyAuthority('USER_READ')")
+//	@PreAuthorize("hasAnyAuthority('USER_READ')")
 	@GetMapping("/users/search")
 	public List<User> searchUser(String name) {
 		List<User> users = repository.findByNameLike("%" + name + "%");
@@ -84,7 +55,7 @@ public class UsersController {
 		return users;
 	}
 
-	@PreAuthorize("hasAnyAuthority('USER_READ')")
+//	@PreAuthorize("hasAnyAuthority('USER_READ')")
 	@GetMapping("/users/{id}")
 	public User findUserById(@PathVariable(value = "id") Long id) {
 		User user = repository.findById(id)
@@ -92,7 +63,7 @@ public class UsersController {
 		return user;
 	}
 
-	@PreAuthorize("hasAnyAuthority('USER_WRITE')")
+//	@PreAuthorize("hasAnyAuthority('USER_WRITE')")
 	@PostMapping("/users")
 	public User createUser(@Valid User user) {
 		Role role = roleRepository.findByName(user.getRolename()).orElseThrow(() -> new ResourceNotFoundException());
@@ -100,7 +71,7 @@ public class UsersController {
 		return repository.save(user);
 	}
 
-	@PreAuthorize("hasAnyAuthority('USER_WRITE')")
+//	@PreAuthorize("hasAnyAuthority('USER_WRITE')")
 	@PutMapping("/users/{id}")
 	public User updateUser(@PathVariable(value = "id") Long id, @Valid User newUser) {
 		User user = findUserById(id);
@@ -109,7 +80,7 @@ public class UsersController {
 		return repository.save(user);
 	}
 
-	@PreAuthorize("hasAnyAuthority('USER_DELETE')")
+//	@PreAuthorize("hasAnyAuthority('USER_DELETE')")
 	@DeleteMapping("/users/{id}")
 	public boolean deleteUser(@PathVariable(value = "id") Long id) {
 		repository.delete(findUserById(id));

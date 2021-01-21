@@ -16,8 +16,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-        .csrf().disable();
+//		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+//        .csrf().disable();
 
 		// Tất cả các request gửi tới Web Server yêu cầu phải được xác thực
 		// (authenticated).
