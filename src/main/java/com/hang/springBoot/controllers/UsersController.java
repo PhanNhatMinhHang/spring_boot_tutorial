@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +36,8 @@ public class UsersController {
 
 //	@PreAuthorize("hasAnyAuthority('USER_READ')")
 	@GetMapping("/users")
-	public List<User> findAllUsers() {
-		return repository.findAll();
+	public Page<User> findAllUsers(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 
 //	@PreAuthorize("hasAnyAuthority('USER_READ')")

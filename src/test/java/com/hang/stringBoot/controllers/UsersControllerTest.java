@@ -1,23 +1,28 @@
 package com.hang.stringBoot.controllers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.hang.springBoot.controllers.UsersController;
+import com.hang.springBoot.models.Role;
 import com.hang.springBoot.models.User;
 import com.hang.springBoot.repositories.RoleRepository;
 import com.hang.springBoot.repositories.UserRepository;
@@ -39,9 +44,39 @@ public class UsersControllerTest {
 		List<User> mockUsers = new ArrayList<>();
 		mockUsers.add(new User(Long.valueOf(1), "HoangPhan", "123"));
 		mockUsers.add(new User(Long.valueOf(2), "HangPhan", "23421"));
-		Mockito.when(repository.findAll()).thenReturn(mockUsers);
+		Page<User> mockPage = new PageImpl<User>(mockUsers);
+		Mockito.when(repository.findAll(Mockito.any(Pageable.class))).thenReturn(mockPage);
 		this.mvc.perform(MockMvcRequestBuilders.get("/users").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(content().json("[{\"id\":1,\"name\":\"HoangPhan\",\"role\":null,\"links\":[]},{\"id\":2,\"name\":\"HangPhan\",\"role\":null,\"links\":[]}]"));
+			.andExpect(jsonPath("$.totalElements", is(2)))
+			.andExpect(jsonPath("$.totalPages", is(1)))
+			.andExpect(jsonPath("$.content[0].id", is(1)))
+			.andExpect(jsonPath("$.content[0].name", is("HoangPhan")))
+			.andExpect(jsonPath("$.content[1].id", is(2)))
+			.andExpect(jsonPath("$.content[1].name", is("HangPhan")));
+	}
+
+	@Test
+	public void testCreateUser() throws Exception {
+		Role mockRole = new Role();
+		mockRole.setId(Long.valueOf(1));
+		mockRole.setName("admin");
+		mockRole.setAuthorities("USER_READ");
+		Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(Optional.of(mockRole));
+		User mockUser = new User(Long.valueOf(1), "HoangPhan", "123");
+		mockUser.setRole(mockRole);
+		Mockito.when(repository.save(Mockito.any(User.class))).thenReturn(mockUser);
+		this.mvc.perform(
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.MULTIPART_FORM_DATA)
+					.param("name", "HoangPhan")
+					.param("password", "123")
+					.param("rolename", "admin")
+			)
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id", is(1)))
+			.andExpect(jsonPath("$.name", is("HoangPhan")))
+			.andExpect(jsonPath("$.role.name", is("admin")))
+			.andExpect(jsonPath("$.role.authorities", is("USER_READ")));;
 	}
 }
