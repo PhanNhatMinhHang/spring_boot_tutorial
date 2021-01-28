@@ -1,5 +1,5 @@
 package com.hang.springBoot.controllers;
-
+//
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +27,7 @@ import com.hang.springBoot.repositories.UserRepository;
 @Controller
 @RestController
 @RequestMapping("/")
-@CrossOrigin("http://localhost:8080")
+//@CrossOrigin("http://localhost:8080")
 public class UsersController {
 	@Autowired
 	private UserRepository repository;
@@ -38,9 +37,8 @@ public class UsersController {
 
 //	@PreAuthorize("hasAnyAuthority('USER_READ')")
 	@GetMapping("/users")
-	public String findAllUsers(Pageable pageable) {
-		return "";
-//		return repository.findAll(pageable);
+	public List<User> findAllUsers() {
+		return repository.findAll();
 	}
 
 //	@PreAuthorize("hasAnyAuthority('USER_READ')")

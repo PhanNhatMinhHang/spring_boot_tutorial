@@ -1,28 +1,21 @@
 package com.hang.springBoot.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig {
+//public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//
+//	@Autowired
+//    private JwtRequestFilter jwtRequestFilter;
 
-import com.hang.springBoot.component.JwtRequestFilter;
-
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
 //		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 //        .csrf().disable();
 
 		// Tất cả các request gửi tới Web Server yêu cầu phải được xác thực
 		// (authenticated).
 //		http.authorizeRequests().antMatchers("/users/**").permitAll();
-	}
+//	}s
 
 //	@Bean
 //	public BCryptPasswordEncoder bCryptPasswordEncoder() {
