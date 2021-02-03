@@ -48,14 +48,25 @@ public class UsersControllerTest {
 		Mockito.when(repository.findAll(Mockito.any(Pageable.class))).thenReturn(mockPage);
 		this.mvc.perform(MockMvcRequestBuilders.get("/users").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.totalElements", is(2)))
-			.andExpect(jsonPath("$.totalPages", is(1)))
-			.andExpect(jsonPath("$.content[0].id", is(1)))
-			.andExpect(jsonPath("$.content[0].name", is("HoangPhan")))
-			.andExpect(jsonPath("$.content[1].id", is(2)))
-			.andExpect(jsonPath("$.content[1].name", is("HangPhan")));
+			.andExpect(jsonPath("totalElements", is(2)))
+			.andExpect(jsonPath("totalPages", is(1)))
+			.andExpect(jsonPath("content[0].id", is(1)))
+			.andExpect(jsonPath("content[0].name", is("HoangPhan")))
+			.andExpect(jsonPath("content[1].id", is(2)))
+			.andExpect(jsonPath("content[1].name", is("HangPhan")));
 	}
 
+	@Test
+	public void testGetUserById() throws Exception {
+		Optional<User> mockUser = Optional.ofNullable(new User(Long.valueOf(1),"HangPhan", "123"));
+		Mockito.when(repository.findById(Long.valueOf(1))).thenReturn(mockUser);
+		this.mvc.perform(MockMvcRequestBuilders.get("/users/1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("id", is (1)))
+		.andExpect(jsonPath("name", is ("HangPhan")));
+		this.mvc.perform(MockMvcRequestBuilders.get("/users/2").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotFound());
+	}
 	@Test
 	public void testCreateUser() throws Exception {
 		Role mockRole = new Role();
@@ -74,9 +85,32 @@ public class UsersControllerTest {
 					.param("rolename", "admin")
 			)
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id", is(1)))
-			.andExpect(jsonPath("$.name", is("HoangPhan")))
-			.andExpect(jsonPath("$.role.name", is("admin")))
-			.andExpect(jsonPath("$.role.authorities", is("USER_READ")));;
+			.andExpect(jsonPath("id", is(1)))
+			.andExpect(jsonPath("name", is("HoangPhan")))
+			.andExpect(jsonPath("role.name", is("admin")))
+			.andExpect(jsonPath("role.authorities", is("USER_READ")));
+	}
+	@Test
+	public void testUpdateUser() throws Exception {
+		User mockUser = new User(Long.valueOf(1), "HoangPhan", "1234");
+		Mockito.when(repository.findById(Long.valueOf(1))).thenReturn(Optional.of(mockUser));
+		User updatedUser = new User(Long.valueOf(1), "HangPhan", "1234");
+		Mockito.when(repository.save(mockUser)).thenReturn(updatedUser);
+		this.mvc.perform(
+				MockMvcRequestBuilders.put("/users/1")
+					.contentType(MediaType.MULTIPART_FORM_DATA)
+					.param("name", "HangPhan")
+			)
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("id", is(1)))
+			.andExpect(jsonPath("name", is("HangPhan")));
+	}
+	
+	@Test
+	public void testDeleteUser() throws Exception {
+		User mockUser = new User(Long.valueOf(1), "HoangPhan", "1234");
+		Mockito.when(repository.findById(Long.valueOf(1))).thenReturn(Optional.of(mockUser));
+		Mockito.doNothing().when(repository).delete(mockUser);
+		this.mvc.perform(MockMvcRequestBuilders.delete("/users/1")).andExpect(status().isOk());
 	}
 }
